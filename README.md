@@ -1,3 +1,3 @@
-# WIP - luigibrother.party Core Plugin
+# WIP - risingvocal.ca Core Plugin
 
-This is intended to be a plugin handling many features of the luigibrother.party Minecraft SMP server.
+This is intended to be a plugin handling many features of the risingvocal.ca Minecraft server.
