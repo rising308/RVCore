@@ -1,7 +1,7 @@
-package ca.risingvocal.lbpcore.listeners;
+package ca.risingvocal.rvcore.listeners;
 
-import ca.risingvocal.lbpcore.LBPCore;
-import ca.risingvocal.lbpcore.model.Database;
+import ca.risingvocal.rvcore.RVCore;
+import ca.risingvocal.rvcore.model.Database;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +11,7 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        for (Player player : LBPCore.getInstance().getServer().getOnlinePlayers()) {
+        for (Player player : RVCore.getInstance().getServer().getOnlinePlayers()) {
             Database.getInstance().retrieveParticleData(player);
         }
     }

@@ -1,4 +1,4 @@
-package ca.risingvocal.lbpcore.util;
+package ca.risingvocal.rvcore.util;
 
 public class ParticleData {
 

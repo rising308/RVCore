@@ -1,17 +1,17 @@
-package ca.risingvocal.lbpcore.util;
+package ca.risingvocal.rvcore.util;
 
-import ca.risingvocal.lbpcore.LBPCore;
+import ca.risingvocal.rvcore.RVCore;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class Placeholders extends PlaceholderExpansion {
-    public Placeholders(LBPCore lbpCore) {
+    public Placeholders(RVCore rvCore) {
     }
 
     @Override
     public String getIdentifier() {
-        return "lbpcore";
+        return "rvcore";
     }
 
     @Override
@@ -21,12 +21,12 @@ public class Placeholders extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "1.1";
     }
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String params) {
-        ParticleData particleCache = LBPConfig.getInstance().particleCache.get(player.getUniqueId());
+        ParticleData particleCache = RVConfig.getInstance().particleCache.get(player.getUniqueId());
 
         if (params.equalsIgnoreCase("red_initial")) {
             return String.valueOf(particleCache.getR()); //

@@ -1,8 +1,8 @@
-package ca.risingvocal.lbpcore.util;
+package ca.risingvocal.rvcore.util;
 
-import ca.risingvocal.lbpcore.LBPCore;
-import ca.risingvocal.lbpcore.model.Database;
-import ca.risingvocal.lbpcore.model.Database.DatabaseType;
+import ca.risingvocal.rvcore.RVCore;
+import ca.risingvocal.rvcore.model.Database;
+import ca.risingvocal.rvcore.model.Database.DatabaseType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class LBPConfig {
-    private final static LBPConfig instance = new LBPConfig();
+public final class RVConfig {
+    private final static RVConfig instance = new RVConfig();
 
     public FileConfiguration langConfig;
 
@@ -40,18 +40,20 @@ public final class LBPConfig {
     private String mysqlPass;
     private String sqliteFilename;
 
-    private LBPConfig() {
+    private RVConfig() {
     }
 
     public void load() {
-        File configFile = new File(LBPCore.getInstance().getDataFolder(), "options.yml");
+        File configFile = new File(RVCore.getInstance().getDataFolder(), "options.yml");
+        File langFile = new File (RVCore.getInstance().getDataFolder(), "lang/en_US.yml");
         loadLang();
 
-        if (!configFile.exists()) LBPCore.getInstance().saveResource("options.yml", false);
+        if (!configFile.exists()) RVCore.getInstance().saveResource("options.yml", false);
+        if (!langFile.exists()) RVCore.getInstance().saveResource("lang/en_US.yml", false);
 
         YamlConfiguration config = new YamlConfiguration();
 
-        for (Player player : LBPCore.getInstance().getServer().getOnlinePlayers()) {
+        for (Player player : RVCore.getInstance().getServer().getOnlinePlayers()) {
             Database.getInstance().retrieveParticleData(player);
         }
 
@@ -92,9 +94,9 @@ public final class LBPConfig {
     }
 
     public void save() {
-        if (!LBPCore.getInstance().getDataFolder().exists()) LBPCore.getInstance().getDataFolder().mkdirs();
+        if (!RVCore.getInstance().getDataFolder().exists()) RVCore.getInstance().getDataFolder().mkdirs();
 
-        for (Player player : LBPCore.getInstance().getServer().getOnlinePlayers()) {
+        for (Player player : RVCore.getInstance().getServer().getOnlinePlayers()) {
             Database.getInstance().saveParticleData(player);
         }
     }
@@ -102,12 +104,12 @@ public final class LBPConfig {
     public void autoSave() {
         if (!particleCache.isEmpty()) {
             save();
-            LBPCore.getInstance().getLogger().info("Autosaved " + particleCache.size() + " player profiles to JSON.");
+            RVCore.getInstance().getLogger().info("Autosaved " + particleCache.size() + " player profiles to JSON.");
         }
     }
 
     public void loadLang() {
-        File langFile = new File(LBPCore.getInstance().getDataFolder(), "lang/en_US.yml");
+        File langFile = new File(RVCore.getInstance().getDataFolder(), "lang/en_US.yml");
         langConfig = YamlConfiguration.loadConfiguration(langFile);
     }
 
@@ -167,7 +169,7 @@ public final class LBPConfig {
         return sqliteFilename;
     }
 
-    public static LBPConfig getInstance() {
+    public static RVConfig getInstance() {
         return instance;
     }
 }

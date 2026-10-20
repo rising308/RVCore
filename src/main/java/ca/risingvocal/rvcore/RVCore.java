@@ -1,13 +1,13 @@
-package ca.risingvocal.lbpcore;
+package ca.risingvocal.rvcore;
 
-import ca.risingvocal.lbpcore.commands.LBPCoreCommand;
-import ca.risingvocal.lbpcore.commands.ParticleCommand;
-import ca.risingvocal.lbpcore.commands.SweepstakesCommand;
-import ca.risingvocal.lbpcore.listeners.PlayerJoin;
-import ca.risingvocal.lbpcore.util.ParticleSpawn;
-import ca.risingvocal.lbpcore.util.ParticleData;
-import ca.risingvocal.lbpcore.util.LBPConfig;
-import ca.risingvocal.lbpcore.util.Placeholders;
+import ca.risingvocal.rvcore.commands.RVCoreCommand;
+import ca.risingvocal.rvcore.commands.ParticleCommand;
+import ca.risingvocal.rvcore.commands.SweepstakesCommand;
+import ca.risingvocal.rvcore.listeners.PlayerJoin;
+import ca.risingvocal.rvcore.util.ParticleSpawn;
+import ca.risingvocal.rvcore.util.ParticleData;
+import ca.risingvocal.rvcore.util.RVConfig;
+import ca.risingvocal.rvcore.util.Placeholders;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,12 +15,11 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 
-import java.io.*;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public final class LBPCore extends JavaPlugin {
+public final class RVCore extends JavaPlugin {
 
     private Economy econ;
 
@@ -30,7 +29,7 @@ public final class LBPCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        LBPConfig.getInstance().load();
+        RVConfig.getInstance().load();
 
         loadCommands();
 
@@ -44,7 +43,7 @@ public final class LBPCore extends JavaPlugin {
 
         getServer().getScheduler().runTaskTimer(this, () -> {
             for (Player player : getServer().getOnlinePlayers()) {
-                ParticleData data = LBPConfig.getInstance().particleCache.get(player.getUniqueId());
+                ParticleData data = RVConfig.getInstance().particleCache.get(player.getUniqueId());
 
                 if (data != null && data.getName() != "NONE") {
                     particleSpawn.particleTickEvent(player, data);
@@ -53,7 +52,7 @@ public final class LBPCore extends JavaPlugin {
         }, 0L, 1L);
 
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            LBPConfig.getInstance().autoSave();
+            RVConfig.getInstance().autoSave();
         }, 6000L, 6000L);
 
         if (!setupEconomy()) {
@@ -62,12 +61,12 @@ public final class LBPCore extends JavaPlugin {
     }
 
     public Map<UUID, ParticleData> getPlayerCache() {
-        return LBPConfig.getInstance().particleCache;
+        return RVConfig.getInstance().particleCache;
     }
 
     public void loadCommands() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            commands.registrar().register(new LBPCoreCommand(this).getTree().build());
+            commands.registrar().register(new RVCoreCommand(this).getTree().build());
         });
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
@@ -82,7 +81,7 @@ public final class LBPCore extends JavaPlugin {
 
 
     public void reloadPlugin() {
-        LBPConfig.getInstance().load();
+        RVConfig.getInstance().load();
         this.logger.info("Reloading!");
     }
 
@@ -103,12 +102,12 @@ public final class LBPCore extends JavaPlugin {
         return econ;
     }
 
-    public static LBPCore getInstance() {
-        return getPlugin(LBPCore.class);
+    public static RVCore getInstance() {
+        return getPlugin(RVCore.class);
     }
 
     @Override
     public void onDisable() {
-        LBPConfig.getInstance().save();
+        RVConfig.getInstance().save();
     }
 }

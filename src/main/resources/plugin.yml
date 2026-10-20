@@ -1,10 +1,10 @@
-name: LBPCore
+name: RVCore
 version: '${version}'
 
-main: ca.risingvocal.lbpcore.LBPCore
-description: luigibrother.party Core Plugin
+main: ca.risingvocal.rvcore.RVCore
+description: risingvocal.ca Core Plugin
 author: rising308
-website: https://www.luigibrother.party
+website: https://www.risingvocal.ca
 api-version: '26.3'
 depend: [Vault]
 softdepend: ["Essentials","PlaceholderAPI"]

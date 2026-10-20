@@ -1,8 +1,8 @@
-package ca.risingvocal.lbpcore.commands;
+package ca.risingvocal.rvcore.commands;
 
-import ca.risingvocal.lbpcore.LBPCore;
-import ca.risingvocal.lbpcore.util.LBPConfig;
-import ca.risingvocal.lbpcore.util.ParticleData;
+import ca.risingvocal.rvcore.RVCore;
+import ca.risingvocal.rvcore.util.RVConfig;
+import ca.risingvocal.rvcore.util.ParticleData;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -19,13 +19,13 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Particle;
 
 public class ParticleCommand {
-    private final LBPCore plugin;
+    private final RVCore plugin;
 
-    public ParticleCommand(LBPCore plugin) {this.plugin = plugin;}
+    public ParticleCommand(RVCore plugin) {this.plugin = plugin;}
 
     public LiteralArgumentBuilder<CommandSourceStack> getTree() {
         return Commands.literal("particle_effect")
-                .requires(sender -> sender.getSender().hasPermission("lbpcore.command.admin.particle"))
+                .requires(sender -> sender.getSender().hasPermission("rvcore.command.admin.particle"))
 
                 .then(Commands.literal("set")
                                 .then(Commands.argument("target", ArgumentTypes.player())
@@ -98,7 +98,7 @@ public class ParticleCommand {
             data.setName(String.valueOf(type));
 
             if (args == 1 && !hide) {
-                String rawSender = LBPConfig.getInstance().getLang().getString("commands.particles.set_type",
+                String rawSender = RVConfig.getInstance().getLang().getString("commands.particles.set_type",
                         "<aqua>Set particle to <dark_aqua><type> <aqua>for <light_purple><player><aqua>!");
                 Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                         Placeholder.unparsed("type", String.valueOf(type)),
@@ -111,7 +111,7 @@ public class ParticleCommand {
             data.setCount(count);
 
             if (args == 2 && !hide) {
-                String rawSender = LBPConfig.getInstance().getLang().getString("commands.particles.set_count",
+                String rawSender = RVConfig.getInstance().getLang().getString("commands.particles.set_count",
                         "<aqua>Set particle to <dark_aqua><type> <aqua>with count <dark_aqua><count> <aqua>for <light_purple><player><aqua>!");
                 Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                         Placeholder.unparsed("type", String.valueOf(type)),
@@ -125,7 +125,7 @@ public class ParticleCommand {
             data.setYOffset(yOffset);
 
             if (args == 3 && !hide) {
-                String rawSender = LBPConfig.getInstance().getLang().getString("commands.particles.set_full",
+                String rawSender = RVConfig.getInstance().getLang().getString("commands.particles.set_full",
                         "<aqua>Set particle to <dark_aqua><type> <aqua>with count <dark_aqua><count> " +
                                 "<aqua>and Y-Offset <dark_aqua><offset> <aqua>for <light_purple><player><aqua>!");
                 Component sender = MiniMessage.miniMessage().deserialize(rawSender,
@@ -138,7 +138,7 @@ public class ParticleCommand {
             }
         }
         plugin.getPlayerCache().put(target.getUniqueId(), data);
-        LBPConfig.getInstance().save();
+        RVConfig.getInstance().save();
     }
 
     private void setRGB(CommandContext<CommandSourceStack> ctx, boolean hide) throws CommandSyntaxException {
@@ -166,7 +166,7 @@ public class ParticleCommand {
         data.setScale(scale);
 
         if (!hide) {
-            String rawSender = LBPConfig.getInstance().getLang().getString("commands.particles.rgb",
+            String rawSender = RVConfig.getInstance().getLang().getString("commands.particles.rgb",
                     "<aqua>Set RGB to <dark_aqua>[<r>, <g>, <b>] [<r1>, <g1>, <b1>] <aqua>with scale <dark_aqua><scale> <aqua>for <light_purple><player><aqua>!");
             Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                     Placeholder.unparsed("r", String.valueOf(red)),
@@ -182,7 +182,7 @@ public class ParticleCommand {
         }
 
         plugin.getPlayerCache().put(target.getUniqueId(), data);
-        LBPConfig.getInstance().save();
+        RVConfig.getInstance().save();
     }
 
     private void toggleParticle(CommandContext<CommandSourceStack> ctx, boolean hide) throws CommandSyntaxException {
@@ -195,7 +195,7 @@ public class ParticleCommand {
         data.setEnabled(!data.getEnabled());
 
         if (!hide) {
-            String rawSender = LBPConfig.getInstance().getLang().getString("commands.particles.toggle",
+            String rawSender = RVConfig.getInstance().getLang().getString("commands.particles.toggle",
                     "<dark_aqua><state> <aqua>particle effect for <light_purple><player><aqua>!");
             Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                     Placeholder.unparsed("state", data.getEnabled() ? "Enabled" : "Disabled"),
@@ -205,6 +205,6 @@ public class ParticleCommand {
         }
 
         plugin.getPlayerCache().put(target.getUniqueId(), data);
-        LBPConfig.getInstance().save();
+        RVConfig.getInstance().save();
     }
 }

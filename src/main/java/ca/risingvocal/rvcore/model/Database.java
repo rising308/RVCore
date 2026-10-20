@@ -1,8 +1,8 @@
-package ca.risingvocal.lbpcore.model;
+package ca.risingvocal.rvcore.model;
 
-import ca.risingvocal.lbpcore.LBPCore;
-import ca.risingvocal.lbpcore.util.LBPConfig;
-import ca.risingvocal.lbpcore.util.ParticleData;
+import ca.risingvocal.rvcore.RVCore;
+import ca.risingvocal.rvcore.util.RVConfig;
+import ca.risingvocal.rvcore.util.ParticleData;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -12,11 +12,11 @@ import java.util.UUID;
 public class Database {
     private static final Database instance = new Database();
 
-    private final LBPConfig settings;
+    private final RVConfig settings;
     private Connection connection;
 
     public Database() {
-        this.settings = LBPConfig.getInstance();
+        this.settings = RVConfig.getInstance();
     }
 
     public void load() {
@@ -35,12 +35,12 @@ public class Database {
                 final String jdbcUrl = "jdbc:mysql://" + this.settings.getMysqlHost() + ":" + this.settings.getMysqlPort() + "/" + this.settings.getMysqlDb() + "?useSSL=false&autoReconnect=true";
 
                 this.connection = DriverManager.getConnection(jdbcUrl, this.settings.getMysqlUser(), this.settings.getMysqlPass());
-                LBPCore.getInstance().logger.info("Connected to the MySQL database.");
+                RVCore.getInstance().logger.info("Connected to the MySQL database.");
             }
             else {
                 Class.forName("org.sqlite.JDBC");
 
-                final File file = new File(LBPCore.getInstance().getDataFolder(), this.settings.getSqliteFilename());
+                final File file = new File(RVCore.getInstance().getDataFolder(), this.settings.getSqliteFilename());
 
                 if (!file.exists())
                     file.createNewFile();
@@ -48,10 +48,10 @@ public class Database {
                 final String jdbcUrl = "jdbc:sqlite:" + file.getAbsolutePath();
                 this.connection = DriverManager.getConnection(jdbcUrl);
 
-                LBPCore.getInstance().logger.info("Connected to the SQLite database.");
+                RVCore.getInstance().logger.info("Connected to the SQLite database.");
             }
         } catch (final Exception ex) {
-            LBPCore.getInstance().logger.severe("Failed to connect to database: " + ex.getMessage());
+            RVCore.getInstance().logger.severe("Failed to connect to database: " + ex.getMessage());
 
             ex.printStackTrace();
         }
@@ -88,7 +88,7 @@ public class Database {
 
             statement.close();
         } catch (final SQLException ex) {
-            LBPCore.getInstance().logger.severe("Failed to create tables in database: " + ex.getMessage());
+            RVCore.getInstance().logger.severe("Failed to create tables in database: " + ex.getMessage());
 
             ex.printStackTrace();
         }
@@ -99,7 +99,7 @@ public class Database {
             if (this.connection != null && this.connection.isClosed()) {
                 this.connection.close();
 
-                LBPCore.getInstance().logger.info("Closed database connection.");
+                RVCore.getInstance().logger.info("Closed database connection.");
             }
         } catch (final SQLException ex) {
             ex.printStackTrace();
@@ -156,7 +156,7 @@ public class Database {
                 }
                 // Save particle parameters
                 try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
-                    ParticleData particleCache = LBPConfig.getInstance().particleCache.get(player.getUniqueId());
+                    ParticleData particleCache = RVConfig.getInstance().particleCache.get(player.getUniqueId());
 
                     statement.setString(1, player.getUniqueId().toString());
                     statement.setString(2, player.getName());
@@ -196,10 +196,10 @@ public class Database {
     public boolean retrieveParticleData(Player player) {
         UUID uuid = player.getUniqueId();
 
-        if (!LBPConfig.getInstance().particleCache.isEmpty())
+        if (!RVConfig.getInstance().particleCache.isEmpty())
             return false;
 
-        ParticleData particleCache = LBPConfig.getInstance().particleCache.get(uuid);
+        ParticleData particleCache = RVConfig.getInstance().particleCache.get(uuid);
 
         synchronized (this.connection) {
             try {
@@ -229,11 +229,11 @@ public class Database {
                     );
 
                     if (particleCache == null) {
-                        LBPConfig.getInstance().particleCache.put(uuid, insertCache);
+                        RVConfig.getInstance().particleCache.put(uuid, insertCache);
                         return true;
                     }
 
-                    LBPConfig.getInstance().particleCache.put(uuid, insertCache);
+                    RVConfig.getInstance().particleCache.put(uuid, insertCache);
                     return true;
                 }
             } catch (final SQLException ex) {

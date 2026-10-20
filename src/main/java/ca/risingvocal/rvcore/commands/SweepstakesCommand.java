@@ -1,7 +1,7 @@
-package ca.risingvocal.lbpcore.commands;
+package ca.risingvocal.rvcore.commands;
 
-import ca.risingvocal.lbpcore.LBPCore;
-import ca.risingvocal.lbpcore.util.LBPConfig;
+import ca.risingvocal.rvcore.RVCore;
+import ca.risingvocal.rvcore.util.RVConfig;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -19,12 +19,12 @@ import org.bukkit.entity.Player;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SweepstakesCommand {
-    private final LBPCore plugin;
-    public SweepstakesCommand(LBPCore plugin) {this.plugin = plugin;}
+    private final RVCore plugin;
+    public SweepstakesCommand(RVCore plugin) {this.plugin = plugin;}
 
     public LiteralArgumentBuilder<CommandSourceStack> getTree() {
         return Commands.literal("sweepstakes")
-                .requires(sender -> sender.getSender().hasPermission("lbpcore.command.admin.sweepstakes"))
+                .requires(sender -> sender.getSender().hasPermission("rvcore.command.admin.sweepstakes"))
                 .then(Commands.argument("target", ArgumentTypes.player())
                         .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
                                 .then(Commands.argument("min_chance", DoubleArgumentType.doubleArg(0.01, 100))
@@ -57,8 +57,8 @@ public class SweepstakesCommand {
 
         double chance = chanceMinArgs / chanceMaxArgs;
 
-        double minGlobal = LBPConfig.getInstance().getMinChance();
-        double maxGlobal = LBPConfig.getInstance().getMaxChance();
+        double minGlobal = RVConfig.getInstance().getMinChance();
+        double maxGlobal = RVConfig.getInstance().getMaxChance();
 
         chance = Math.clamp(chance, minGlobal, maxGlobal);
 
@@ -68,7 +68,7 @@ public class SweepstakesCommand {
             finalAmount = amount;
         }
 
-        if (LBPConfig.getInstance().getDebugState()) {
+        if (RVConfig.getInstance().getDebugState()) {
             source.getSender().sendMessage("chance = " + chance);
             source.getSender().sendMessage("roll = " + roll);
             source.getSender().sendMessage("finalAmount = " + finalAmount);
@@ -78,7 +78,7 @@ public class SweepstakesCommand {
 
 
         if (!hide) {
-            String rawSender = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.sender", "<aqua>Executed sweepstakes on <light_purple><player><aqua>!");
+            String rawSender = RVConfig.getInstance().getLang().getString("commands.sweepstakes.sender", "<aqua>Executed sweepstakes on <light_purple><player><aqua>!");
             Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                     Placeholder.unparsed("amount", formattedAmount),
                     Placeholder.unparsed("player", playerName.getName())
@@ -90,14 +90,14 @@ public class SweepstakesCommand {
         if (finalAmount > 0) {
             economy.depositPlayer(playerName.getPlayer(), finalAmount);
 
-            String rawTargetWin = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.win", "<gold>You won <yellow><amount><gold>!");
+            String rawTargetWin = RVConfig.getInstance().getLang().getString("commands.sweepstakes.win", "<gold>You won <yellow><amount><gold>!");
             Component targetWin = MiniMessage.miniMessage().deserialize(rawTargetWin,
                     Placeholder.unparsed("amount", formattedAmount));
             playerName.getPlayer().sendMessage(targetWin);
             return;
         }
         // Lose
-        String rawTargetLose = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.lose", "<gray>You didn't win anything...");
+        String rawTargetLose = RVConfig.getInstance().getLang().getString("commands.sweepstakes.lose", "<gray>You didn't win anything...");
         Component targetLose = MiniMessage.miniMessage().deserialize(rawTargetLose);
         playerName.getPlayer().sendMessage(targetLose);
     }
