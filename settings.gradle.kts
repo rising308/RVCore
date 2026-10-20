@@ -1,1 +1,1 @@
-rootProject.name = "LBPCore"
+rootProject.name = "RVCore"
