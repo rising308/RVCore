@@ -38,6 +38,7 @@ public final class RVConfig {
     private String mysqlDb;
     private String mysqlUser;
     private String mysqlPass;
+    private String mysqlTablePfx;
     private String sqliteFilename;
 
     private RVConfig() {
@@ -84,6 +85,7 @@ public final class RVConfig {
         mysqlDb = config.getString("database.database");
         mysqlUser = config.getString("database.username");
         mysqlPass = config.getString("database.password");
+        mysqlTablePfx = config.getString("database.table-prefix");
 
         sqliteFilename = config.getString("database.sqlite.filename");
 
@@ -164,6 +166,8 @@ public final class RVConfig {
     public String getMysqlPass() {
         return mysqlPass;
     }
+
+    public String getMysqlTablePfx() { return mysqlTablePfx; }
 
     public String getSqliteFilename() {
         return sqliteFilename;

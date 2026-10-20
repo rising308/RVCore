@@ -16,10 +16,16 @@ particles:
 # type: MYSQL or SQLITE
 database:
   type: SQLITE
+
   host: localhost
   port: 3306
+
   database: db
   username: user
   password: pass
+
+  # Only applies to MySQL
+  table-prefix: rvcore
+
   sqlite:
     filename: sqlite.db

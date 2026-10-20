@@ -61,7 +61,7 @@ public class Database {
         try {
             final Statement statement = this.connection.createStatement();
 
-            statement.execute("CREATE TABLE IF NOT EXISTS particle_data (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + (this.settings.getDatabaseType() == DatabaseType.MYSQL ? this.settings.getMysqlTablePfx() + "_" : "") + "particle_data (" +
                     "id INTEGER PRIMARY KEY " + (this.settings.getDatabaseType() == DatabaseType.MYSQL ? "AUTO_INCREMENT" : "AUTOINCREMENT") + ", " +
                     "player_uuid VARCHAR(36) NOT NULL, " +
                     "player_name TEXT NOT NULL, " +
@@ -79,12 +79,15 @@ public class Database {
                     "last_changed TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                     ")");
 
-            statement.execute("CREATE INDEX IF NOT EXISTS indx_particle_player_uuid ON particle_data (player_uuid)");
-
-            statement.executeUpdate(
+            String uniqueIdxSql = (this.settings.getDatabaseType() == DatabaseType.MYSQL ?
                     "CREATE UNIQUE INDEX IF NOT EXISTS unique_player_uuid " +
-                            "ON particle_data (player_uuid)"
-            );
+                    "ON " + (this.settings.getMysqlTablePfx()) + "_particle_data (player_uuid)" :
+
+                    //SQLITE
+                    "CREATE UNIQUE INDEX IF NOT EXISTS unique_player_uuid " +
+                    "ON particle_data (player_uuid)");
+
+            statement.executeUpdate(uniqueIdxSql);
 
             statement.close();
         } catch (final SQLException ex) {
@@ -112,7 +115,7 @@ public class Database {
                 final String sql;
                 if (this.settings.getDatabaseType() == DatabaseType.MYSQL) {
                     sql =
-                            "INSERT INTO particle_data (" +
+                            "INSERT INTO " + (this.settings.getMysqlTablePfx()) + "_particle_data (" +
                                     "player_uuid, player_name, " +
                                     "red_initial, green_initial, blue_initial, " +
                                     "red_final, green_final, blue_final, " +
@@ -203,9 +206,15 @@ public class Database {
 
         synchronized (this.connection) {
             try {
-                final PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT * FROM particle_data WHERE player_uuid = ?"
-                );
+                String sql;
+
+                if (this.settings.getDatabaseType() == DatabaseType.MYSQL) {
+                    sql = "SELECT * FROM " + (this.settings.getMysqlTablePfx()) + "_particle_data WHERE player_uuid = ?";
+                } else {
+                    sql = "SELECT * FROM particle_data WHERE player_uuid = ?"; //SQLITE
+                }
+
+                final PreparedStatement statement = this.connection.prepareStatement(sql);
 
                 statement.setString(1, player.getUniqueId().toString());
 
