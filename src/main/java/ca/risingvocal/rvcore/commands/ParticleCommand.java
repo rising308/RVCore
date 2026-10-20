@@ -94,6 +94,8 @@ public class ParticleCommand {
         int count = IntegerArgumentType.getInteger(ctx, "count");
         double yOffset = DoubleArgumentType.getDouble(ctx, "y_offset");
 
+        data.setEnabled(true);
+
         if (args >= 1) {
             data.setName(String.valueOf(type));
 
