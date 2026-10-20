@@ -3,23 +3,19 @@ package ca.risingvocal.lbpcore;
 import ca.risingvocal.lbpcore.commands.LBPCoreCommand;
 import ca.risingvocal.lbpcore.commands.ParticleCommand;
 import ca.risingvocal.lbpcore.commands.SweepstakesCommand;
+import ca.risingvocal.lbpcore.listeners.PlayerJoin;
 import ca.risingvocal.lbpcore.util.ParticleSpawn;
 import ca.risingvocal.lbpcore.util.ParticleData;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import ca.risingvocal.lbpcore.util.LBPConfig;
+import ca.risingvocal.lbpcore.util.Placeholders;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 
 import java.io.*;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -27,38 +23,28 @@ import java.util.logging.Logger;
 public final class LBPCore extends JavaPlugin {
 
     private Economy econ;
-    private FileConfiguration langConfig;
-
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private Map<UUID, ParticleData> playerCache = new HashMap<>();
-    private File dataFile;
 
     private ParticleSpawn particleSpawn;
 
-    Logger logger = getLogger();
-
-    @Override
-    public void onLoad() {
-
-    }
+    public Logger logger = getLogger();
 
     @Override
     public void onEnable() {
-        saveResource("lang/en_US.yml", true);
-        saveDefaultConfig();
-
-        this.dataFile = new File(getDataFolder(), "player_data.json");
-        loadData();
-
-        loadLang();
+        LBPConfig.getInstance().load();
 
         loadCommands();
 
+        this.getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
+
         this.particleSpawn = new ParticleSpawn(this);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new Placeholders(this).register();
+        }
 
         getServer().getScheduler().runTaskTimer(this, () -> {
             for (Player player : getServer().getOnlinePlayers()) {
-                ParticleData data = playerCache.get(player.getUniqueId());
+                ParticleData data = LBPConfig.getInstance().particleCache.get(player.getUniqueId());
 
                 if (data != null && data.getName() != "NONE") {
                     particleSpawn.particleTickEvent(player, data);
@@ -67,10 +53,7 @@ public final class LBPCore extends JavaPlugin {
         }, 0L, 1L);
 
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            if (!playerCache.isEmpty()) {
-                saveData();
-                getLogger().info("Autosaved " + playerCache.size() + " player profiles to JSON.");
-            }
+            LBPConfig.getInstance().autoSave();
         }, 6000L, 6000L);
 
         if (!setupEconomy()) {
@@ -78,36 +61,8 @@ public final class LBPCore extends JavaPlugin {
         }
     }
 
-    public void saveData() {
-        if (!getDataFolder().exists()) getDataFolder().mkdirs();
-
-        try (Writer writer = new FileWriter(dataFile)) {
-            gson.toJson(playerCache, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadData() {
-        if (!dataFile.exists()) return;
-
-        try (Reader reader = new FileReader(dataFile)) {
-            Type type = new TypeToken<HashMap<UUID, ParticleData>>(){}.getType();
-            playerCache = gson.fromJson(reader, type);
-
-            if (playerCache == null) playerCache = new HashMap<>();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Map<UUID, ParticleData> getPlayerCache() {
-        return playerCache;
-    }
-
-    public void loadLang() {
-        File langFile = new File(getDataFolder(), "lang/en_US.yml");
-        this.langConfig = YamlConfiguration.loadConfiguration(langFile);
+        return LBPConfig.getInstance().particleCache;
     }
 
     public void loadCommands() {
@@ -124,14 +79,10 @@ public final class LBPCore extends JavaPlugin {
         });
     }
 
-    public FileConfiguration getLang() {
-        return this.langConfig;
-    }
+
 
     public void reloadPlugin() {
-        this.reloadConfig();
-        this.loadLang();
-
+        LBPConfig.getInstance().load();
         this.logger.info("Reloading!");
     }
 
@@ -152,8 +103,12 @@ public final class LBPCore extends JavaPlugin {
         return econ;
     }
 
+    public static LBPCore getInstance() {
+        return getPlugin(LBPCore.class);
+    }
+
     @Override
     public void onDisable() {
-        saveData();
+        LBPConfig.getInstance().save();
     }
 }

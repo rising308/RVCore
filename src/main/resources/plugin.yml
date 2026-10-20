@@ -5,9 +5,11 @@ main: ca.risingvocal.lbpcore.LBPCore
 description: luigibrother.party Core Plugin
 author: rising308
 website: https://www.luigibrother.party
-api-version: '1.21.11'
+api-version: '26.3'
 depend: [Vault]
-softdepend: [Essentials]
+softdepend: ["Essentials","PlaceholderAPI"]
+libraries:
+  - com.mysql:mysql-connector-j:9.7.0
 load: POSTWORLD
 
 permissions:

@@ -1,6 +1,7 @@
 package ca.risingvocal.lbpcore.commands;
 
 import ca.risingvocal.lbpcore.LBPCore;
+import ca.risingvocal.lbpcore.util.LBPConfig;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -56,8 +57,8 @@ public class SweepstakesCommand {
 
         double chance = chanceMinArgs / chanceMaxArgs;
 
-        double minGlobal = plugin.getConfig().getDouble("sweepstakes.min-chance");
-        double maxGlobal = plugin.getConfig().getDouble("sweepstakes.max-chance");
+        double minGlobal = LBPConfig.getInstance().getMinChance();
+        double maxGlobal = LBPConfig.getInstance().getMaxChance();
 
         chance = Math.clamp(chance, minGlobal, maxGlobal);
 
@@ -67,7 +68,7 @@ public class SweepstakesCommand {
             finalAmount = amount;
         }
 
-        if (plugin.getConfig().getBoolean("sweepstakes.debug")) {
+        if (LBPConfig.getInstance().getDebugState()) {
             source.getSender().sendMessage("chance = " + chance);
             source.getSender().sendMessage("roll = " + roll);
             source.getSender().sendMessage("finalAmount = " + finalAmount);
@@ -77,7 +78,7 @@ public class SweepstakesCommand {
 
 
         if (!hide) {
-            String rawSender = plugin.getLang().getString("commands.sweepstakes.sender", "<aqua>Executed sweepstakes on <light_purple><player><aqua>!");
+            String rawSender = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.sender", "<aqua>Executed sweepstakes on <light_purple><player><aqua>!");
             Component sender = MiniMessage.miniMessage().deserialize(rawSender,
                     Placeholder.unparsed("amount", formattedAmount),
                     Placeholder.unparsed("player", playerName.getName())
@@ -87,16 +88,16 @@ public class SweepstakesCommand {
 
         // Check for win
         if (finalAmount > 0) {
-            economy.depositPlayer(playerName.getName(), finalAmount);
+            economy.depositPlayer(playerName.getPlayer(), finalAmount);
 
-            String rawTargetWin = plugin.getLang().getString("commands.sweepstakes.win", "<gold>You won <yellow><amount><gold>!");
+            String rawTargetWin = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.win", "<gold>You won <yellow><amount><gold>!");
             Component targetWin = MiniMessage.miniMessage().deserialize(rawTargetWin,
                     Placeholder.unparsed("amount", formattedAmount));
             playerName.getPlayer().sendMessage(targetWin);
             return;
         }
         // Lose
-        String rawTargetLose = plugin.getLang().getString("commands.sweepstakes.lose", "<gray>You didn't win anything...");
+        String rawTargetLose = LBPConfig.getInstance().getLang().getString("commands.sweepstakes.lose", "<gray>You didn't win anything...");
         Component targetLose = MiniMessage.miniMessage().deserialize(rawTargetLose);
         playerName.getPlayer().sendMessage(targetLose);
     }

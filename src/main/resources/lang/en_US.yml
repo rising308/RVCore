@@ -8,3 +8,4 @@ commands:
     set_count: "<aqua>Set particle to <dark_aqua><type> <aqua>with count <dark_aqua><count> <aqua>for <light_purple><player><aqua>!"
     set_full: "<aqua>Set particle to <dark_aqua><type> <aqua>with count <dark_aqua><count> <aqua>and Y-Offset <dark_aqua><offset> <aqua>for <light_purple><player><aqua>!"
     rgb: "<aqua>Set RGB to <dark_aqua>[<r>, <g>, <b>] [<r1>, <g1>, <b1>] <aqua>with scale <dark_aqua><scale> <aqua>for <light_purple><player><aqua>!"
+    toggle: "<dark_aqua><state> <aqua>particle effect for <light_purple><player><aqua>!"

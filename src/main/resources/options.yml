@@ -12,3 +12,14 @@ particles:
   view-distance: 72
   view-sphere: true
   show-in-spectator: false
+
+# type: MYSQL or SQLITE
+database:
+  type: SQLITE
+  host: localhost
+  port: 3306
+  database: db
+  username: user
+  password: pass
+  sqlite:
+    filename: sqlite.db

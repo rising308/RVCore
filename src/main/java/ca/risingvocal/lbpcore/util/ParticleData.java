@@ -11,7 +11,9 @@ public class ParticleData {
 
     private String name;
 
-    public ParticleData(int r, int g, int b, int r1, int g1, int b1, int count, double yOffset, double scale, String name) {
+    private boolean enabled;
+
+    public ParticleData(int r, int g, int b, int r1, int g1, int b1, int count, double yOffset, double scale, String name, boolean enabled) {
         this.count = count; this.yOffset = yOffset;
 
         this.r = r; this.g = g; this.b = b;
@@ -19,6 +21,8 @@ public class ParticleData {
         this.scale = scale;
 
         this.name = name;
+
+        this.enabled = enabled;
     }
 
     public int getCount() { return count; }
@@ -34,6 +38,8 @@ public class ParticleData {
 
     public String getName() { return name; }
 
+    public boolean getEnabled() { return enabled; }
+
     public void setCount(int count) { this.count = count; }
     public void setYOffset(double yOffset) { this.yOffset = yOffset; }
 
@@ -46,4 +52,6 @@ public class ParticleData {
     public void setScale(double scale) { this.scale = scale; }
 
     public void setName(String name) { this.name = name; }
+
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }
