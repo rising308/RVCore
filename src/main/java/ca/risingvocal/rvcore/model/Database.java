@@ -159,6 +159,13 @@ public class Database {
                 }
                 // Save particle parameters
                 try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+                    if (RVConfig.getInstance().particleCache.isEmpty()) {
+                        ParticleData data = RVCore.getInstance().getPlayerCache().getOrDefault(player.getUniqueId(), new ParticleData(0, 0, 0, 255, 255, 255, 1, 0.0, 1.0, "null", false));
+
+
+                        RVCore.getInstance().getPlayerCache().put(player.getUniqueId(), data);
+                    } // Ensure there is always a value in particleCache
+
                     ParticleData particleCache = RVConfig.getInstance().particleCache.get(player.getUniqueId());
 
                     statement.setString(1, player.getUniqueId().toString());
