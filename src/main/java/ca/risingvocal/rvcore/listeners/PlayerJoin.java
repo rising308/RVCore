@@ -14,14 +14,14 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for (Player player : RVCore.getInstance().getServer().getOnlinePlayers()) {
-            Database.getInstance().retrieveParticleData(player);
-
             if (RVConfig.getInstance().particleCache.isEmpty()) {
                 ParticleData data = RVCore.getInstance().getPlayerCache().getOrDefault(player.getUniqueId(), new ParticleData(0, 0, 0, 255, 255, 255, 1, 0.0, 1.0, "null", false));
 
 
                 RVCore.getInstance().getPlayerCache().put(player.getUniqueId(), data);
             }
+
+            Database.getInstance().retrieveParticleData(player);
         }
 
 

@@ -13,10 +13,10 @@ libraries:
 load: POSTWORLD
 
 permissions:
-  lbpcore.command.admin:
+  rvcore.command.admin:
     description: "Administrator permissions"
     default: op
     children:
-      lbpcore.command.admin.reload: true
-      lbpcore.command.admin.sweepstakes: true
+      rvcore.command.admin.reload: true
+      rvcore.command.admin.sweepstakes: true
 

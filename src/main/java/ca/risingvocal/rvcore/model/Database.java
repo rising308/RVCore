@@ -199,9 +199,6 @@ public class Database {
     public boolean retrieveParticleData(Player player) {
         UUID uuid = player.getUniqueId();
 
-        if (!RVConfig.getInstance().particleCache.isEmpty())
-            return false;
-
         ParticleData particleCache = RVConfig.getInstance().particleCache.get(uuid);
 
         synchronized (this.connection) {
