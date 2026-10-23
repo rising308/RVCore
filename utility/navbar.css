@@ -13,6 +13,8 @@
     height: 40px;
     display: flex;
     border: 4px solid #540822;
+    border-left: none;
+    border-right: none;
     background-color: #990F3D;
 }
 
@@ -29,10 +31,17 @@
 
 .navbar li:hover {
     background-color: #FF3382;
-    color: #540822;
 }
 
 .navbar li:hover a {
+    color: #540822;
+}
+
+.navbar li.active {
+    background-color: #FF3382;
+}
+
+.navbar li.active a {
     color: #540822;
 }
 
